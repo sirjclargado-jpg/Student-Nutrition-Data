@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Nutrition Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 20px auto; padding: 20px; background-color: #f4f7f6; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        select, input, button { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { background-color: #27ae60; color: white; border: none; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        button:hover { background-color: #219150; }
+        .chart-container { margin-top: 30px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🍎 School Food Data Logger</h1>
+    
+    <div class="form-group">
+        <label for="foodType">What did the student eat most of?</label>
+        <select id="foodType">
+            <option value="Carbohydrates">Carbohydrates (Rice, Bread, Pasta)</option>
+            <option value="Proteins">Proteins (Meat, Fish, Eggs, Beans)</option>
+            <option value="Fats">Fats (Butter, Oil, Fried Foods, Nuts)</option>
+        </select>
+    </div>
+
+    <button onclick="addData()">Submit Data</button>
+
+    <div class="chart-container">
+        <canvas id="nutritionChart"></canvas>
+    </div>
+    
+    <button onclick="clearData()" style="background-color: #e74c3c; margin-top: 50px; font-size: 12px;">Clear All Data</button>
+</div>
+
+<script>
+    // Initialize data from LocalStorage or set to zero
+    let dataCounts = JSON.parse(localStorage.getItem('nutritionData')) || {
+        Carbohydrates: 0,
+        Proteins: 0,
+        Fats: 0
+    };
+
+    const ctx = document.getElementById('nutritionChart').getContext('2d');
+    let nutritionChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Carbohydrates', 'Proteins', 'Fats'],
+            datasets: [{
+                label: 'Student Diet Distribution',
+                data: [dataCounts.Carbohydrates, dataCounts.Proteins, dataCounts.Fats],
+                backgroundColor: ['#3498db', '#e67e22', '#f1c40f'],
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' },
+                title: { display: true, text: 'Dominant Macronutrients in Student Meals' }
+            }
+        }
+    });
+
+    function addData() {
+        const selectedType = document.getElementById('foodType').value;
+        
+        // Update data
+        dataCounts[selectedType]++;
+        
+        // Save to LocalStorage
+        localStorage.setItem('nutritionData', JSON.stringify(dataCounts));
+        
+        // Update Chart
+        nutritionChart.data.datasets[0].data = [
+            dataCounts.Carbohydrates, 
+            dataCounts.Proteins, 
+            dataCounts.Fats
+        ];
+        nutritionChart.update();
+        
+        alert("Data added successfully!");
+    }
+
+    function clearData() {
+        if(confirm("Are you sure you want to reset all collected data?")) {
+            localStorage.removeItem('nutritionData');
+            location.reload();
+        }
+    }
+</script>
+
+</body>
+</html>
