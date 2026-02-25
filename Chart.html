@@ -3,66 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pinggang Pinoy: Student Research Hub</title>
+    <title>School Macronutrient Analysis</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 20px auto; padding: 20px; background-color: #f0f2f5; }
         .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #27ae60; }
+        h1 { text-align: center; color: #2c3e50; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
         @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
         
         .input-group { margin-bottom: 15px; }
         label { font-weight: bold; display: block; margin-bottom: 5px; }
-        select, input[type="text"] { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
+        select, input[type="text"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
         
-        .slider-box { background: #f9f9f9; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 5px solid #27ae60; }
+        .slider-box { background: #f9f9f9; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 5px solid #3498db; }
         #totalStatus { text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; margin: 15px 0; }
-        .valid { background: #d4edda; color: #155724; }
-        .invalid { background: #f8d7da; color: #721c24; }
+        .valid { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .invalid { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
-        button { width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 1.1rem; cursor: pointer; }
-        button:disabled { background: #ccc; }
+        button { width: 100%; padding: 15px; background: #3498db; color: white; border: none; border-radius: 8px; font-size: 1.1rem; cursor: pointer; font-weight: bold; }
+        button:disabled { background: #bdc3c7; cursor: not-allowed; opacity: 0.7; }
 
-        .chart-controls { display: flex; gap: 5px; margin-bottom: 15px; justify-content: center; }
-        .view-btn { width: auto; padding: 5px 10px; background: #34495e; font-size: 0.8rem; }
+        .chart-controls { display: flex; gap: 5px; margin-bottom: 15px; justify-content: center; flex-wrap: wrap; }
+        .view-btn { width: auto; padding: 8px 12px; background: #34495e; font-size: 0.8rem; border-radius: 5px; color: white; border: none; cursor: pointer; }
         .active-view { background: #27ae60 !important; }
         
         .log-section { margin-top: 40px; border-top: 2px solid #eee; padding-top: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; font-size: 0.9rem; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #f8f9fa; color: #2c3e50; }
+        th { background-color: #f8f9fa; }
 
-        #lockScreen { display: none; text-align: center; padding: 20px; border: 2px dashed #27ae60; border-radius: 15px; background: #f9fffb; }
+        #lockScreen { display: none; text-align: center; padding: 20px; border: 2px dashed #3498db; border-radius: 15px; background: #f9fcff; }
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h1>🇵🇭 Pinggang Pinoy Data Hub</h1>
+    <h1>🔬 Macronutrient Data Collection</h1>
 
     <div class="grid">
         <div id="formContainer">
             <div id="formArea">
                 <div class="input-group">
-                    <label>Student Name (The one who ate):</label>
-                    <input type="text" id="stuName" placeholder="Enter student name...">
+                    <label>Student Name (Who ate the meal):</label>
+                    <input type="text" id="stuName" placeholder="Enter student name..." oninput="sync()">
                 </div>
                 <div class="input-group">
                     <label>Grade Level:</label>
                     <select id="gradeLevel">
-                        <option value="G7">Grade 7</option>
-                        <option value="G8">Grade 8</option>
-                        <option value="G9">Grade 9</option>
-                        <option value="G11">Grade 11</option>
-                        <option value="G12">Grade 12</option>
+                        <option value="Grade 7">Grade 7</option>
+                        <option value="Grade 8">Grade 8</option>
+                        <option value="Grade 9">Grade 9</option>
+                        <option value="Grade 11">Grade 11</option>
+                        <option value="Grade 12">Grade 12</option>
                     </select>
                 </div>
 
-                <div class="slider-box"><span>🍚 Carbohydrates:</span> <input type="range" id="go" min="0" max="100" value="33" oninput="sync()"> <span id="goL">33%</span></div>
-                <div class="slider-box"><span>🍗 Proteins:</span> <input type="range" id="grow" min="0" max="100" value="17" oninput="sync()"> <span id="growL">17%</span></div>
-                <div class="slider-box"><span>🥦 Lipids:</span> <input type="range" id="glow" min="0" max="100" value="50" oninput="sync()"> <span id="glowL">50%</span></div>
+                <div class="slider-box"><span>🍞 Carbohydrates:</span> <input type="range" id="carbs" min="0" max="100" value="40" oninput="sync()"> <span id="carbsL">40%</span></div>
+                <div class="slider-box"><span>🧀 Lipids (Fats):</span> <input type="range" id="lipids" min="0" max="100" value="30" oninput="sync()"> <span id="lipidsL">30%</span></div>
+                <div class="slider-box"><span>🍗 Proteins:</span> <input type="range" id="proteins" min="0" max="100" value="30" oninput="sync()"> <span id="proteinsL">30%</span></div>
 
                 <div id="totalStatus" class="valid">Total: 100%</div>
                 <button id="submitBtn" onclick="submitData()">Submit Entry</button>
@@ -70,105 +70,123 @@
 
             <div id="lockScreen">
                 <h2 id="greet"></h2>
-                <p>You have already submitted your data for this activity.</p>
+                <p>Your research entry has been recorded.</p>
             </div>
         </div>
 
         <div>
             <div class="chart-controls">
                 <button class="view-btn active-view" onclick="updateChart('all', this)">All</button>
-                <button class="view-btn" onclick="updateChart('G10', this)">G10</button>
-                <button class="view-btn" onclick="updateChart('G11', this)">G11</button>
-                <button class="view-btn" onclick="updateChart('G12', this)">G12</button>
+                <button class="view-btn" onclick="updateChart('Grade 7', this)">G7</button>
+                <button class="view-btn" onclick="updateChart('Grade 8', this)">G8</button>
+                <button class="view-btn" onclick="updateChart('Grade 9', this)">G9</button>
+                <button class="view-btn" onclick="updateChart('Grade 11', this)">G11</button>
+                <button class="view-btn" onclick="updateChart('Grade 12', this)">G12</button>
             </div>
             <canvas id="pieChart"></canvas>
         </div>
     </div>
 
     <div class="log-section">
-        <h3>📋 Submission Log</h3>
+        <h3>📋 Local Submission Log</h3>
         <table>
             <thead>
                 <tr>
-                    <th>Name</th>
+                    <th>Student Name</th>
                     <th>Grade</th>
-                    <th>Go</th>
-                    <th>Grow</th>
-                    <th>Glow</th>
+                    <th>Carbs</th>
+                    <th>Lipids</th>
+                    <th>Proteins</th>
                 </tr>
             </thead>
-            <tbody id="logBody">
-                </tbody>
+            <tbody id="logBody"></tbody>
         </table>
     </div>
 </div>
 
 <script>
-    // Initialize Data
-    let stats = JSON.parse(localStorage.getItem('pStats')) || {
-        all: { go: 0, grow: 0, glow: 0, count: 0 },
-        G10: { go: 0, grow: 0, glow: 0, count: 0 },
-        G11: { go: 0, grow: 0, glow: 0, count: 0 },
-        G12: { go: 0, grow: 0, glow: 0, count: 0 },
+    let stats = JSON.parse(localStorage.getItem('macroStats')) || {
+        all: { carbs: 0, lipids: 0, proteins: 0, count: 0 },
+        "Grade 7": { carbs: 0, lipids: 0, proteins: 0, count: 0 },
+        "Grade 8": { carbs: 0, lipids: 0, proteins: 0, count: 0 },
+        "Grade 9": { carbs: 0, lipids: 0, proteins: 0, count: 0 },
+        "Grade 11": { carbs: 0, lipids: 0, proteins: 0, count: 0 },
+        "Grade 12": { carbs: 0, lipids: 0, proteins: 0, count: 0 },
         logs: []
     };
 
     function sync() {
-        const go = parseInt(document.getElementById('go').value);
-        const grow = parseInt(document.getElementById('grow').value);
-        const glow = parseInt(document.getElementById('glow').value);
-        document.getElementById('goL').innerText = go + "%";
-        document.getElementById('growL').innerText = grow + "%";
-        document.getElementById('glowL').innerText = glow + "%";
+        const carbs = parseInt(document.getElementById('carbs').value);
+        const lipids = parseInt(document.getElementById('lipids').value);
+        const proteins = parseInt(document.getElementById('proteins').value);
+        const name = document.getElementById('stuName').value.trim();
         
-        const total = go + grow + glow;
+        document.getElementById('carbsL').innerText = carbs + "%";
+        document.getElementById('lipidsL').innerText = lipids + "%";
+        document.getElementById('proteinsL').innerText = proteins + "%";
+        
+        const total = carbs + lipids + proteins;
         const s = document.getElementById('totalStatus');
         const b = document.getElementById('submitBtn');
+        
         s.innerText = "Total: " + total + "%";
-        if(total === 100) { s.className = "valid"; b.disabled = false; } 
-        else { s.className = "invalid"; b.disabled = true; }
+        
+        // Button is only enabled if total is 100 AND name is not empty
+        if(total === 100 && name !== "") { 
+            s.className = "valid"; 
+            b.disabled = false; 
+        } else { 
+            s.className = "invalid"; 
+            b.disabled = true; 
+        }
     }
 
     const ctx = document.getElementById('pieChart').getContext('2d');
     let pieChart = new Chart(ctx, {
         type: 'pie',
         data: {
-            labels: ['Go', 'Grow', 'Glow'],
-            datasets: [{ data: [33, 17, 50], backgroundColor: ['#f1c40f', '#e67e22', '#27ae60'] }]
-        }
+            labels: ['Carbohydrates', 'Lipids', 'Proteins'],
+            datasets: [{ data: [40, 30, 30], backgroundColor: ['#3498db', '#f1c40f', '#e74c3c'] }]
+        },
+        options: { plugins: { legend: { position: 'bottom' } } }
     });
 
     function updateChart(lvl, btn) {
-        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active-view'));
-        if(btn) btn.classList.add('active-view');
+        if(btn) {
+            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active-view'));
+            btn.classList.add('active-view');
+        }
 
         const s = stats[lvl];
-        if(s.count > 0) {
-            pieChart.data.datasets[0].data = [ (s.go/s.count), (s.grow/s.count), (s.glow/s.count) ];
+        if(s && s.count > 0) {
+            pieChart.data.datasets[0].data = [ 
+                (s.carbs/s.count).toFixed(1), 
+                (s.lipids/s.count).toFixed(1), 
+                (s.proteins/s.count).toFixed(1) 
+            ];
         } else {
-            pieChart.data.datasets[0].data = [33, 17, 50]; // Default view
+            pieChart.data.datasets[0].data = [40, 30, 30]; // Reset view
         }
         pieChart.update();
     }
 
     function submitData() {
-        const name = document.getElementById('stuName').value;
+        const name = document.getElementById('stuName').value.trim();
         const gr = document.getElementById('gradeLevel').value;
-        if(!name) return alert("Enter name!");
+        const carbs = parseInt(document.getElementById('carbs').value);
+        const lipids = parseInt(document.getElementById('lipids').value);
+        const proteins = parseInt(document.getElementById('proteins').value);
 
-        const go = parseInt(document.getElementById('go').value);
-        const grow = parseInt(document.getElementById('grow').value);
-        const glow = parseInt(document.getElementById('glow').value);
-
-        // Update Stats
+        // Update specific Grade and 'all'
         [gr, 'all'].forEach(k => {
-            stats[k].go += go; stats[k].grow += grow; stats[k].glow += glow; stats[k].count++;
+            stats[k].carbs += carbs; 
+            stats[k].lipids += lipids; 
+            stats[k].proteins += proteins; 
+            stats[k].count++;
         });
 
-        // Add to log
-        stats.logs.push({ name, gr, go, grow, glow });
-
-        localStorage.setItem('pStats', JSON.stringify(stats));
+        stats.logs.push({ name, gr, carbs, lipids, proteins });
+        localStorage.setItem('macroStats', JSON.stringify(stats));
         localStorage.setItem('userDone', 'true');
         localStorage.setItem('storedName', name);
 
@@ -179,13 +197,13 @@
 
     function renderLogs() {
         const body = document.getElementById('logBody');
-        body.innerHTML = stats.logs.map(l => `
+        body.innerHTML = stats.logs.slice().reverse().map(l => `
             <tr>
                 <td>${l.name}</td>
                 <td>${l.gr}</td>
-                <td>${l.go}%</td>
-                <td>${l.grow}%</td>
-                <td>${l.glow}%</td>
+                <td>${l.carbs}%</td>
+                <td>${l.lipids}%</td>
+                <td>${l.proteins}%</td>
             </tr>
         `).join('');
     }
@@ -193,13 +211,14 @@
     function lock(name) {
         document.getElementById('formArea').classList.add('hidden');
         document.getElementById('lockScreen').style.display = 'block';
-        document.getElementById('greet').innerText = "Mabuhay, " + name + "!";
+        document.getElementById('greet').innerText = "Researcher: " + name;
     }
 
     window.onload = () => {
         renderLogs();
         updateChart('all');
         if(localStorage.getItem('userDone') === 'true') lock(localStorage.getItem('storedName'));
+        sync(); // Initial check to disable button
     };
 </script>
 </body>
