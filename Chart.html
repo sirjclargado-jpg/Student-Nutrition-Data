@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grade 10 Macronutrient Research Hub</title>
+    <title>Global Macronutrient Research Hub</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 900px; margin: 20px auto; padding: 20px; background-color: #f0f2f5; color: #333; }
@@ -73,7 +73,7 @@
                 </div>
 
                 <div id="totalStatus" class="valid">Total: 100%</div>
-                <button type="submit" id="submitBtn">Submit Entry</button>
+                <button type="submit" id="submitBtn">Submit Data</button>
             </form>
         </div>
 
@@ -95,7 +95,7 @@
 <script>
     // --- CONFIGURATION ---
     // PASTE YOUR GOOGLE SCRIPT URL BELOW:
-    const doc = SpreadsheetApp.openByUrl('https://script.google.com/macros/s/AKfycbwPKVBm9zLXzYIRc6HLwgjLww65IbbMFsoibnBAhjBFeWrzeINztmMg0AqCD9i7eCiM4w/exec') 
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwPKVBm9zLXzYIRc6HLwgjLww65IbbMFsoibnBAhjBFeWrzeINztmMg0AqCD9i7eCiM4w/exec'; 
     // ---------------------
 
     const form = document.getElementById('macroForm');
