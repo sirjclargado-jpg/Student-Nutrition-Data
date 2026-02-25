@@ -42,7 +42,7 @@
         <div id="formSection">
             <form id="macroForm">
                 <div class="input-group">
-                    <label>Student Name (Who ate the meal):</label>
+                    <label>Student Name:</label>
                     <input type="text" name="Name" id="stuName" placeholder="Enter full name..." required oninput="validate()">
                 </div>
 
@@ -73,7 +73,7 @@
                 </div>
 
                 <div id="totalStatus" class="valid">Total: 100%</div>
-                <button type="submit" id="submitBtn">Send to Global Database</button>
+                <button type="submit" id="submitBtn">Submit Entry</button>
             </form>
         </div>
 
@@ -95,7 +95,7 @@
 <script>
     // --- CONFIGURATION ---
     // PASTE YOUR GOOGLE SCRIPT URL BELOW:
-    const doc = SpreadsheetApp.openByUrl('PASTE_YOUR_FULL_GOOGLE_SHEET_URL_HERE') 
+    const doc = SpreadsheetApp.openByUrl('https://script.google.com/macros/s/AKfycbwPKVBm9zLXzYIRc6HLwgjLww65IbbMFsoibnBAhjBFeWrzeINztmMg0AqCD9i7eCiM4w/exec') 
     // ---------------------
 
     const form = document.getElementById('macroForm');
