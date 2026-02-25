@@ -3,145 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pinggang Pinoy Class Tracker</title>
+    <title>Pinggang Pinoy: Grade Level Tracker</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; max-width: 650px; margin: 20px auto; padding: 20px; background-color: #f0f4f8; }
-        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #27ae60; margin-bottom: 5px; }
-        h3 { text-align: center; color: #7f8c8d; margin-top: 0; font-weight: normal; }
+        body { font-family: 'Segoe UI', sans-serif; max-width: 800px; margin: 20px auto; padding: 20px; background-color: #f4f7f6; }
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #27ae60; }
+        .form-section { border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
+        .input-group { margin-bottom: 15px; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; }
+        select, input[type="text"] { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; }
         
-        .input-box { margin-bottom: 25px; }
-        label { font-weight: bold; display: block; margin-bottom: 8px; color: #2c3e50; }
-        input[type="text"] { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .slider-box { background: #f9f9f9; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 5px solid #27ae60; }
+        .slider-info { display: flex; justify-content: space-between; font-weight: bold; }
         
-        .slider-section { background: #fff; border: 1px solid #eee; padding: 15px; border-radius: 10px; margin-bottom: 10px; }
-        .slider-header { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px; }
-        input[type="range"] { width: 100%; accent-color: #27ae60; }
-        
-        #totalBox { text-align: center; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 1.2rem; margin: 20px 0; transition: 0.3s; }
-        .valid { background: #d4edda; color: #155724; border: 2px solid #c3e6cb; }
-        .invalid { background: #f8d7da; color: #721c24; border: 2px solid #f5c6cb; }
+        #totalStatus { text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; margin: 15px 0; }
+        .valid { background: #d4edda; color: #155724; }
+        .invalid { background: #f8d7da; color: #721c24; }
 
-        button { width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; }
-        button:disabled { background: #bdc3c7; cursor: not-allowed; }
+        button { width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 1.1rem; cursor: pointer; }
+        button:disabled { background: #ccc; }
+
+        .chart-controls { display: flex; gap: 10px; margin-top: 30px; justify-content: center; flex-wrap: wrap; }
+        .view-btn { width: auto; padding: 8px 15px; background: #34495e; font-size: 0.9rem; }
+        .active-view { background: #27ae60 !important; }
         
-        #lockScreen { display: none; text-align: center; padding: 40px 20px; border: 3px solid #27ae60; border-radius: 15px; background: #f9fffb; }
+        #lockScreen { display: none; text-align: center; padding: 30px; border: 2px solid #27ae60; border-radius: 15px; }
         .hidden { display: none; }
-        .chart-area { margin-top: 30px; border-top: 2px solid #eee; padding-top: 20px; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h1>🇵🇭 Pinggang Pinoy Tracker</h1>
-    <h3>Science Class Data Collection</h3>
+    <h1>🇵🇭 School Nutrition Hub</h1>
 
     <div id="formArea">
-        <div class="input-box">
-            <label>Student Full Name:</label>
-            <input type="text" id="stuName" placeholder="Enter your name to start...">
+        <div class="input-group">
+            <label>Researcher/Student Name:</label>
+            <input type="text" id="stuName" placeholder="Enter name...">
         </div>
 
-        <div class="slider-section">
-            <div class="slider-header"><span style="color:#f1c40f">🍚 GO (Carbs)</span> <span id="goLabel">33%</span></div>
-            <input type="range" id="goRange" min="0" max="100" value="33" oninput="calculate()">
+        <div class="input-group">
+            <label>Subject's Grade Level:</label>
+            <select id="gradeLevel">
+                <option value="G10">Grade 10</option>
+                <option value="G11">Grade 11</option>
+                <option value="G12">Grade 12</option>
+            </select>
         </div>
 
-        <div class="slider-section">
-            <div class="slider-header"><span style="color:#e67e22">🍗 GROW (Protein)</span> <span id="growLabel">17%</span></div>
-            <input type="range" id="growRange" min="0" max="100" value="17" oninput="calculate()">
+        <div class="slider-box">
+            <div class="slider-info"><span>🍚 GO</span> <span id="goVal">33%</span></div>
+            <input type="range" id="goRange" min="0" max="100" value="33" oninput="sync()">
+        </div>
+        <div class="slider-box">
+            <div class="slider-info"><span>🍗 GROW</span> <span id="growVal">17%</span></div>
+            <input type="range" id="growRange" min="0" max="100" value="17" oninput="sync()">
+        </div>
+        <div class="slider-box">
+            <div class="slider-info"><span>🥦 GLOW</span> <span id="glowVal">50%</span></div>
+            <input type="range" id="glowRange" min="0" max="100" value="50" oninput="sync()">
         </div>
 
-        <div class="slider-section">
-            <div class="slider-header"><span style="color:#27ae60">🥦 GLOW (Veggies/Fruit)</span> <span id="glowLabel">50%</span></div>
-            <input type="range" id="glowRange" min="0" max="100" value="50" oninput="calculate()">
-        </div>
-
-        <div id="totalBox" class="valid">Plate Total: <span id="percentSum">100</span>%</div>
-        <button id="submitBtn" onclick="saveData()">Submit My Plate</button>
+        <div id="totalStatus" class="valid">Total: 100%</div>
+        <button id="submitBtn" onclick="submitData()">Submit Data</button>
     </div>
 
     <div id="lockScreen">
-        <h2 style="color: #27ae60;">Mabuhay, <span id="savedName"></span>!</h2>
-        <p>Your "Pinggang Pinoy" data has been recorded on this device.</p>
-        <p style="font-size: 0.9rem; color: #666;">(Submission limit: 1 per device)</p>
+        <h2 id="greet"></h2>
+        <p>Your data has been added to the school charts.</p>
     </div>
 
-    <div class="chart-area">
-        <canvas id="plateChart"></canvas>
+    <div class="chart-section">
+        <div class="chart-controls">
+            <button class="view-btn active-view" onclick="updateChartView('all', this)">Whole School</button>
+            <button class="view-btn" onclick="updateChartView('G10', this)">Grade 10</button>
+            <button class="view-btn" onclick="updateChartView('G11', this)">Grade 11</button>
+            <button class="view-btn" onclick="updateChartView('G12', this)">Grade 12</button>
+        </div>
+        <canvas id="myChart" style="margin-top: 20px;"></canvas>
     </div>
 </div>
 
 <script>
-    const go = document.getElementById('goRange');
-    const grow = document.getElementById('growRange');
-    const glow = document.getElementById('glowRange');
+    // Data Storage (Local)
+    let stats = JSON.parse(localStorage.getItem('nutritionStats')) || {
+        all: { go: 0, grow: 0, glow: 0, count: 0 },
+        G10: { go: 0, grow: 0, glow: 0, count: 0 },
+        G11: { go: 0, grow: 0, glow: 0, count: 0 },
+        G12: { go: 0, grow: 0, glow: 0, count: 0 }
+    };
 
-    function calculate() {
-        document.getElementById('goLabel').innerText = go.value + "%";
-        document.getElementById('growLabel').innerText = grow.value + "%";
-        document.getElementById('glowLabel').innerText = glow.value + "%";
+    function sync() {
+        const go = parseInt(document.getElementById('goRange').value);
+        const grow = parseInt(document.getElementById('growRange').value);
+        const glow = parseInt(document.getElementById('glowRange').value);
         
-        const sum = parseInt(go.value) + parseInt(grow.value) + parseInt(glow.value);
-        const box = document.getElementById('totalBox');
+        document.getElementById('goVal').innerText = go + "%";
+        document.getElementById('growVal').innerText = grow + "%";
+        document.getElementById('glowVal').innerText = glow + "%";
+
+        const total = go + grow + glow;
+        const status = document.getElementById('totalStatus');
         const btn = document.getElementById('submitBtn');
         
-        document.getElementById('percentSum').innerText = sum;
-        
-        if(sum === 100) {
-            box.className = "valid";
+        status.innerText = "Total: " + total + "%";
+        if(total === 100) {
+            status.className = "valid";
             btn.disabled = false;
-            box.innerHTML = `Plate Total: ${sum}% (Balanced!)`;
         } else {
-            box.className = "invalid";
+            status.className = "invalid";
             btn.disabled = true;
-            box.innerHTML = `Plate Total: ${sum}% (Must be 100%)`;
         }
     }
 
-    // Chart logic
-    const ctx = document.getElementById('plateChart').getContext('2d');
-    let plateChart = new Chart(ctx, {
-        type: 'pie',
+    // Charting
+    const ctx = document.getElementById('myChart').getContext('2d');
+    let myChart = new Chart(ctx, {
+        type: 'bar',
         data: {
-            labels: ['Go (Carbs)', 'Grow (Protein)', 'Glow (Glow)'],
+            labels: ['Go', 'Grow', 'Glow'],
             datasets: [{
-                data: [33, 17, 50],
+                label: 'Avg Percentage',
+                data: [0, 0, 0],
                 backgroundColor: ['#f1c40f', '#e67e22', '#27ae60']
             }]
         },
-        options: {
-            plugins: { title: { display: true, text: 'Your Current Plate Composition' } }
-        }
+        options: { scales: { y: { max: 100, beginAtZero: true } } }
     });
 
-    function saveData() {
-        const name = document.getElementById('stuName').value;
-        if(!name) return alert("Please enter your name!");
+    function updateChartView(level, btn) {
+        // UI toggle
+        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active-view'));
+        btn.classList.add('active-view');
 
-        localStorage.setItem('pinoySubmitted', 'true');
-        localStorage.setItem('pinoyName', name);
-        
-        showLockedState(name);
+        const s = stats[level];
+        if(s.count === 0) {
+            myChart.data.datasets[0].data = [0,0,0];
+        } else {
+            myChart.data.datasets[0].data = [
+                (s.go / s.count).toFixed(1),
+                (s.grow / s.count).toFixed(1),
+                (s.glow / s.count).toFixed(1)
+            ];
+        }
+        myChart.options.plugins.title = { display: true, text: "Averages for " + (level === 'all' ? "Whole School" : level) };
+        myChart.update();
     }
 
-    function showLockedState(name) {
+    function submitData() {
+        const name = document.getElementById('stuName').value;
+        const level = document.getElementById('gradeLevel').value;
+        if(!name) return alert("Please enter a name");
+
+        const go = parseInt(document.getElementById('goRange').value);
+        const grow = parseInt(document.getElementById('growRange').value);
+        const glow = parseInt(document.getElementById('glowRange').value);
+
+        // Update Grade Level
+        stats[level].go += go;
+        stats[level].grow += grow;
+        stats[level].glow += glow;
+        stats[level].count += 1;
+
+        // Update Whole School
+        stats.all.go += go;
+        stats.all.grow += grow;
+        stats.all.glow += glow;
+        stats.all.count += 1;
+
+        localStorage.setItem('nutritionStats', JSON.stringify(stats));
+        localStorage.setItem('hasSubmitted', 'true');
+        localStorage.setItem('userName', name);
+
+        lock(name);
+        updateChartView('all', document.querySelector('.view-btn'));
+    }
+
+    function lock(name) {
         document.getElementById('formArea').classList.add('hidden');
         document.getElementById('lockScreen').style.display = 'block';
-        document.getElementById('savedName').innerText = name;
-        
-        // Update Chart to show static final result
-        plateChart.options.plugins.title.text = "Final Submitted Plate";
-        plateChart.update();
+        document.getElementById('greet').innerText = "Hello, " + name + "!";
     }
 
-    window.onload = function() {
-        if(localStorage.getItem('pinoySubmitted') === 'true') {
-            showLockedState(localStorage.getItem('pinoyName'));
-        }
+    window.onload = () => {
+        if(localStorage.getItem('hasSubmitted') === 'true') lock(localStorage.getItem('userName'));
+        updateChartView('all', document.querySelector('.view-btn'));
     };
 </script>
-
 </body>
 </html>
