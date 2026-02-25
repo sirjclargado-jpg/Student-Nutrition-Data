@@ -3,55 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Macronutrient Analysis</title>
+    <title>Global Macronutrient Research Hub</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 20px auto; padding: 20px; background-color: #f0f2f5; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 900px; margin: 20px auto; padding: 20px; background-color: #f0f2f5; color: #333; }
         .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #2c3e50; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
         @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
         
-        .input-group { margin-bottom: 15px; }
-        label { font-weight: bold; display: block; margin-bottom: 5px; }
-        select, input[type="text"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
+        .input-group { margin-bottom: 20px; }
+        label { font-weight: bold; display: block; margin-bottom: 8px; }
+        input[type="text"], select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; font-size: 16px; }
         
-        .slider-box { background: #f9f9f9; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 5px solid #3498db; }
-        #totalStatus { text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; margin: 15px 0; }
+        .slider-box { background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 5px solid #3498db; }
+        .slider-header { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px; }
+        input[type="range"] { width: 100%; cursor: pointer; accent-color: #3498db; }
+        
+        #totalStatus { text-align: center; padding: 15px; border-radius: 8px; font-weight: bold; margin: 20px 0; font-size: 1.1rem; }
         .valid { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .invalid { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
-        button { width: 100%; padding: 15px; background: #3498db; color: white; border: none; border-radius: 8px; font-size: 1.1rem; cursor: pointer; font-weight: bold; }
-        button:disabled { background: #bdc3c7; cursor: not-allowed; opacity: 0.7; }
+        button { width: 100%; padding: 18px; background: #3498db; color: white; border: none; border-radius: 8px; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:disabled { background: #bdc3c7; cursor: not-allowed; }
+        button:hover:not(:disabled) { background: #2980b9; }
 
-        .chart-controls { display: flex; gap: 5px; margin-bottom: 15px; justify-content: center; flex-wrap: wrap; }
-        .view-btn { width: auto; padding: 8px 12px; background: #34495e; font-size: 0.8rem; border-radius: 5px; color: white; border: none; cursor: pointer; }
-        .active-view { background: #27ae60 !important; }
-        
-        .log-section { margin-top: 40px; border-top: 2px solid #eee; padding-top: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; font-size: 0.9rem; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #f8f9fa; }
-
-        #lockScreen { display: none; text-align: center; padding: 20px; border: 2px dashed #3498db; border-radius: 15px; background: #f9fcff; }
+        #successMessage { display: none; text-align: center; padding: 40px; border: 2px dashed #27ae60; border-radius: 15px; background: #f9fffb; }
         .hidden { display: none; }
+        .chart-container { display: flex; flex-direction: column; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h1>🔬 Macronutrient Data Collection</h1>
+    <h1>🔬 School Macronutrient Hub</h1>
 
     <div class="grid">
-        <div id="formContainer">
-            <div id="formArea">
+        <div id="formSection">
+            <form id="macroForm">
                 <div class="input-group">
-                    <label>Student Name:</label>
-                    <input type="text" id="stuName" placeholder="Enter student name..." oninput="sync()">
+                    <label>Student Name (Who ate the meal):</label>
+                    <input type="text" name="Name" id="stuName" placeholder="Enter full name..." required oninput="validate()">
                 </div>
+
                 <div class="input-group">
                     <label>Grade Level:</label>
-                    <select id="gradeLevel">
+                    <select name="Grade" id="gradeLevel">
                         <option value="Grade 7">Grade 7</option>
                         <option value="Grade 8">Grade 8</option>
                         <option value="Grade 9">Grade 9</option>
@@ -60,166 +57,128 @@
                     </select>
                 </div>
 
-                <div class="slider-box"><span>🍞 Carbohydrates:</span> <input type="range" id="carbs" min="0" max="100" value="40" oninput="sync()"> <span id="carbsL">40%</span></div>
-                <div class="slider-box"><span>🧀 Lipids (Fats):</span> <input type="range" id="lipids" min="0" max="100" value="30" oninput="sync()"> <span id="lipidsL">30%</span></div>
-                <div class="slider-box"><span>🍗 Proteins:</span> <input type="range" id="proteins" min="0" max="100" value="30" oninput="sync()"> <span id="proteinsL">30%</span></div>
+                <div class="slider-box">
+                    <div class="slider-header"><span>🍞 Carbohydrates</span> <span id="cL">40%</span></div>
+                    <input type="range" name="Carbohydrates" id="carbs" min="0" max="100" value="40" oninput="validate()">
+                </div>
+
+                <div class="slider-box">
+                    <div class="slider-header"><span>🧀 Lipids (Fats)</span> <span id="lL">30%</span></div>
+                    <input type="range" name="Lipids" id="lipids" min="0" max="100" value="30" oninput="validate()">
+                </div>
+
+                <div class="slider-box">
+                    <div class="slider-header"><span>🍗 Proteins</span> <span id="pL">30%</span></div>
+                    <input type="range" name="Proteins" id="proteins" min="0" max="100" value="30" oninput="validate()">
+                </div>
 
                 <div id="totalStatus" class="valid">Total: 100%</div>
-                <button id="submitBtn" onclick="submitData()">Submit Entry</button>
-            </div>
-
-            <div id="lockScreen">
-                <h2 id="greet"></h2>
-                <p>Your research entry has been recorded.</p>
-            </div>
+                <button type="submit" id="submitBtn">Send to Global Database</button>
+            </form>
         </div>
 
-        <div>
-            <div class="chart-controls">
-                <button class="view-btn active-view" onclick="updateChart('all', this)">All</button>
-                <button class="view-btn" onclick="updateChart('Grade 7', this)">G7</button>
-                <button class="view-btn" onclick="updateChart('Grade 8', this)">G8</button>
-                <button class="view-btn" onclick="updateChart('Grade 9', this)">G9</button>
-                <button class="view-btn" onclick="updateChart('Grade 11', this)">G11</button>
-                <button class="view-btn" onclick="updateChart('Grade 12', this)">G12</button>
-            </div>
-            <canvas id="pieChart"></canvas>
+        <div id="successMessage" class="hidden">
+            <h2 style="color: #27ae60;">Data Recorded! ✅</h2>
+            <p>Your research entry has been sent to the teacher's master sheet.</p>
+            <p><em>Check the class projector to see the live results!</em></p>
         </div>
-    </div>
 
-    <div class="log-section">
-        <h3>📋 Local Submission Log</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Student Name</th>
-                    <th>Grade</th>
-                    <th>Carbs</th>
-                    <th>Lipids</th>
-                    <th>Proteins</th>
-                </tr>
-            </thead>
-            <tbody id="logBody"></tbody>
-        </table>
+        <div class="chart-container">
+            <canvas id="livePieChart"></canvas>
+            <p style="text-align: center; color: #7f8c8d; font-size: 0.9rem; margin-top: 15px;">
+                Visualizing your current entry proportions.
+            </p>
+        </div>
     </div>
 </div>
 
 <script>
-    let stats = JSON.parse(localStorage.getItem('macroStats')) || {
-        all: { carbs: 0, lipids: 0, proteins: 0, count: 0 },
-        "Grade 7": { carbs: 0, lipids: 0, proteins: 0, count: 0 },
-        "Grade 8": { carbs: 0, lipids: 0, proteins: 0, count: 0 },
-        "Grade 9": { carbs: 0, lipids: 0, proteins: 0, count: 0 },
-        "Grade 11": { carbs: 0, lipids: 0, proteins: 0, count: 0 },
-        "Grade 12": { carbs: 0, lipids: 0, proteins: 0, count: 0 },
-        logs: []
-    };
+    // --- CONFIGURATION ---
+    // PASTE YOUR GOOGLE SCRIPT URL BELOW:
+    const scriptURL = https://docs.google.com/spreadsheets/u/1/d/1xbwgbhTSTaivtvEL62YVoO_dSUmSxrjO3dpkMjvMTlA/htmlview; 
+    // ---------------------
 
-    function sync() {
-        const carbs = parseInt(document.getElementById('carbs').value);
-        const lipids = parseInt(document.getElementById('lipids').value);
-        const proteins = parseInt(document.getElementById('proteins').value);
+    const form = document.getElementById('macroForm');
+    const cS = document.getElementById('carbs');
+    const lS = document.getElementById('lipids');
+    const pS = document.getElementById('proteins');
+
+    function validate() {
+        const c = parseInt(cS.value);
+        const l = parseInt(lS.value);
+        const p = parseInt(pS.value);
         const name = document.getElementById('stuName').value.trim();
         
-        document.getElementById('carbsL').innerText = carbs + "%";
-        document.getElementById('lipidsL').innerText = lipids + "%";
-        document.getElementById('proteinsL').innerText = proteins + "%";
+        document.getElementById('cL').innerText = c + "%";
+        document.getElementById('lL').innerText = l + "%";
+        document.getElementById('pL').innerText = p + "%";
+
+        const total = c + l + p;
+        const status = document.getElementById('totalStatus');
+        const btn = document.getElementById('submitBtn');
+
+        status.innerText = "Total: " + total + "%";
         
-        const total = carbs + lipids + proteins;
-        const s = document.getElementById('totalStatus');
-        const b = document.getElementById('submitBtn');
-        
-        s.innerText = "Total: " + total + "%";
-        
-        // Button is only enabled if total is 100 AND name is not empty
-        if(total === 100 && name !== "") { 
-            s.className = "valid"; 
-            b.disabled = false; 
-        } else { 
-            s.className = "invalid"; 
-            b.disabled = true; 
+        // Update Chart visually as they move sliders
+        myPieChart.data.datasets[0].data = [c, l, p];
+        myPieChart.update('none'); // Update without animation for smoothness
+
+        if(total === 100 && name !== "") {
+            status.className = "valid";
+            btn.disabled = false;
+        } else {
+            status.className = "invalid";
+            btn.disabled = true;
         }
     }
 
-    const ctx = document.getElementById('pieChart').getContext('2d');
-    let pieChart = new Chart(ctx, {
+    // Initialize Chart
+    const ctx = document.getElementById('livePieChart').getContext('2d');
+    let myPieChart = new Chart(ctx, {
         type: 'pie',
         data: {
             labels: ['Carbohydrates', 'Lipids', 'Proteins'],
-            datasets: [{ data: [40, 30, 30], backgroundColor: ['#3498db', '#f1c40f', '#e74c3c'] }]
+            datasets: [{
+                data: [40, 30, 30],
+                backgroundColor: ['#3498db', '#f1c40f', '#e74c3c']
+            }]
         },
-        options: { plugins: { legend: { position: 'bottom' } } }
+        options: {
+            plugins: {
+                legend: { position: 'bottom' },
+                title: { display: true, text: 'Current Meal Composition' }
+            }
+        }
     });
 
-    function updateChart(lvl, btn) {
-        if(btn) {
-            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active-view'));
-            btn.classList.add('active-view');
-        }
+    // Form Submission Logic
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerText = "Uploading Data...";
 
-        const s = stats[lvl];
-        if(s && s.count > 0) {
-            pieChart.data.datasets[0].data = [ 
-                (s.carbs/s.count).toFixed(1), 
-                (s.lipids/s.count).toFixed(1), 
-                (s.proteins/s.count).toFixed(1) 
-            ];
-        } else {
-            pieChart.data.datasets[0].data = [40, 30, 30]; // Reset view
-        }
-        pieChart.update();
-    }
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => {
+                document.getElementById('formSection').classList.add('hidden');
+                document.getElementById('successMessage').style.display = 'block';
+                localStorage.setItem('formSubmitted', 'true');
+            })
+            .catch(error => {
+                alert('Error! Check your internet connection or Script URL.', error.message);
+                btn.disabled = false;
+                btn.innerText = "Send to Global Database";
+            });
+    });
 
-    function submitData() {
-        const name = document.getElementById('stuName').value.trim();
-        const gr = document.getElementById('gradeLevel').value;
-        const carbs = parseInt(document.getElementById('carbs').value);
-        const lipids = parseInt(document.getElementById('lipids').value);
-        const proteins = parseInt(document.getElementById('proteins').value);
-
-        // Update specific Grade and 'all'
-        [gr, 'all'].forEach(k => {
-            stats[k].carbs += carbs; 
-            stats[k].lipids += lipids; 
-            stats[k].proteins += proteins; 
-            stats[k].count++;
-        });
-
-        stats.logs.push({ name, gr, carbs, lipids, proteins });
-        localStorage.setItem('macroStats', JSON.stringify(stats));
-        localStorage.setItem('userDone', 'true');
-        localStorage.setItem('storedName', name);
-
-        renderLogs();
-        updateChart('all');
-        lock(name);
-    }
-
-    function renderLogs() {
-        const body = document.getElementById('logBody');
-        body.innerHTML = stats.logs.slice().reverse().map(l => `
-            <tr>
-                <td>${l.name}</td>
-                <td>${l.gr}</td>
-                <td>${l.carbs}%</td>
-                <td>${l.lipids}%</td>
-                <td>${l.proteins}%</td>
-            </tr>
-        `).join('');
-    }
-
-    function lock(name) {
-        document.getElementById('formArea').classList.add('hidden');
-        document.getElementById('lockScreen').style.display = 'block';
-        document.getElementById('greet').innerText = "Researcher: " + name;
-    }
-
+    // Lock if already submitted on this device
     window.onload = () => {
-        renderLogs();
-        updateChart('all');
-        if(localStorage.getItem('userDone') === 'true') lock(localStorage.getItem('storedName'));
-        sync(); // Initial check to disable button
+        if(localStorage.getItem('formSubmitted') === 'true') {
+            document.getElementById('formSection').classList.add('hidden');
+            document.getElementById('successMessage').style.display = 'block';
+        }
     };
 </script>
+
 </body>
 </html>
